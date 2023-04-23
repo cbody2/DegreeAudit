@@ -2,11 +2,14 @@ package edu.xula.www;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         System.out.println("Welcome to..");
         StartScreen();
+
+        User inputUser = UserInput();
     }
 
     public static void StartScreen(){
@@ -32,5 +35,26 @@ public class Main {
             }
             System.out.println(stringBuilder);
         }
+    }
+
+    public static User UserInput(){
+        Scanner userInput = new Scanner(System.in);
+        System.out.println("Please input your XULA 900 number:");
+        String userIdentification = userInput.nextLine();
+
+        if (userIdentification.length() != 9){
+            System.out.println("Invalid 900 number length. Please try again.\n");
+            return UserInput();
+        }
+
+        try {
+            Integer.parseInt(userIdentification);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid 900 number. Please try again.\n");
+            return UserInput();
+        }
+
+        return new User(Integer.parseInt(userIdentification));
+
     }
 }

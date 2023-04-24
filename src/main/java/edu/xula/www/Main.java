@@ -2,7 +2,14 @@ package edu.xula.www;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Main {
     public static void main(String[] args) {
@@ -10,6 +17,23 @@ public class Main {
         StartScreen();
 
         User inputUser = UserInput();
+
+        Set<String> transcripts = getTranscriptFilenames();
+    }
+
+    public static Set<String> getTranscriptFilenames() {
+        Set<String> transcripts = new HashSet<>();
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get("src/main/Transcripts"))) {
+            for (Path path : stream) {
+                if (!Files.isDirectory(path)) {
+                    transcripts.add(path.getFileName()
+                            .toString());
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return transcripts;
     }
 
     public static void StartScreen(){

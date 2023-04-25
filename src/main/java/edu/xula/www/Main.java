@@ -7,9 +7,10 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashSet;
-import java.util.Scanner;
-import java.util.Set;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.List;
+
 
 public class Main {
     public static void main(String[] args) {
@@ -18,11 +19,74 @@ public class Main {
 
         User inputUser = UserInput();
 
-        Set<String> transcripts = getTranscriptFilenames();
+        List<String> transcripts = getTranscriptFilenames();
+        if(!hasTranscript(transcripts, inputUser.getUserIdentification())) {
+            System.out.println("Please upload a transcript");
+        } else {
+            String currentSemester =
+                    getSemester(LocalDate.now().getMonthValue(), LocalDate.now().getYear());
+            String latestTranscriptSemester =
+                    getLatestTranscriptSemester(transcripts,inputUser.getUserIdentification());
+            if (transcriptNeedsUpdate(currentSemester, latestTranscriptSemester))
+                System.out.println("Please upload updated transcript");
+        }
+
     }
 
-    public static Set<String> getTranscriptFilenames() {
-        Set<String> transcripts = new HashSet<>();
+    public static boolean transcriptNeedsUpdate(String current, String transcript) {
+        String[] currentParts = current.split(" ");
+        String[] transcriptParts = transcript.split(" ");
+        if (Integer.parseInt(currentParts[1]) > Integer.parseInt(transcriptParts[1]))
+            return true;
+        else {
+            String currentSemester = currentParts[0];
+            String transcriptSemester = transcriptParts[0];
+            if (currentSemester.equalsIgnoreCase("Spring"))
+                return true;
+            else if (currentSemester.equalsIgnoreCase("Summer"))
+                return transcriptSemester.equalsIgnoreCase("Spring");
+            else
+                return transcriptSemester.equalsIgnoreCase(currentSemester);
+        }
+    }
+
+    public static String getSemesterFromFilename(String filename) {
+        String[] parts = filename.split("_");
+        char[] dateCharacters = parts[2].toCharArray();
+        String year = new StringBuilder().append(dateCharacters[0]).append(dateCharacters[1])
+                .append(dateCharacters[2]).append(dateCharacters[3]).toString();
+        String month = new StringBuilder().append(dateCharacters[4]).append(dateCharacters[5]).toString();
+        return getSemester(Integer.parseInt(month), Integer.parseInt(year));
+    }
+
+    public static String getLatestTranscriptSemester(List<String> transcripts, int id) {
+        return getSemesterFromFilename(getLatestTranscript(transcripts, id));
+    }
+
+    public static String getLatestTranscript(List<String> transcripts, int id) {
+        Stack<String> userTranscripts = new Stack<>();
+        for (int i = 0; i < transcripts.size(); i++) {
+            String current = transcripts.get(i);
+            String[] parts = current.split("_");
+            if (Integer.parseInt(parts[0]) == id)
+                userTranscripts.push(current);
+        }
+        return userTranscripts.pop();
+    }
+
+    public static String getSemester(int month, int year) {
+        String semester = "";
+        if (month >= 1 && month <= 5)
+            semester = "Spring";
+        else if (month >= 6 && month <= 7)
+            semester = "Summer";
+        else if (month >= 8 && month <= 12)
+            semester = "Fall";
+        return semester + " " + year;
+    }
+
+    public static List<String> getTranscriptFilenames() {
+        List<String> transcripts = new ArrayList<>();
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get("src/main/Transcripts"))) {
             for (Path path : stream) {
                 if (!Files.isDirectory(path)) {
@@ -34,6 +98,15 @@ public class Main {
             throw new RuntimeException(e);
         }
         return transcripts;
+    }
+
+    public static boolean hasTranscript(List<String> transcripts, int userIdentification) {
+        for (String filename : transcripts) {
+            String[] parts = filename.split("_");
+            if (Integer.parseInt(parts[0]) == userIdentification)
+                return true;
+        }
+        return false;
     }
 
     public static void StartScreen(){

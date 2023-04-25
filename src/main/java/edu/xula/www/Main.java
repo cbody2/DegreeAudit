@@ -27,6 +27,7 @@ public class Main {
                     getSemester(LocalDate.now().getMonthValue(), LocalDate.now().getYear());
             String latestTranscriptSemester =
                     getLatestTranscriptSemester(transcripts,inputUser.getUserIdentification());
+            System.out.println("Latest Transcript: " + latestTranscriptSemester);
             if (transcriptNeedsUpdate(currentSemester, latestTranscriptSemester))
                 System.out.println("Please upload updated transcript");
         }

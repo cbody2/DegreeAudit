@@ -110,6 +110,7 @@ public class Main {
     }
 
     public static void StartScreen(){
+        /**Prints out an interesting start-up screen to the console. */
 
         int width = 200;
         int height = 30;
@@ -135,6 +136,7 @@ public class Main {
     }
 
     public static User UserInput(){
+        /**Returns/Checks a students 900 number for identification.*/
         Scanner userInput = new Scanner(System.in);
         System.out.println("Please input your XULA 900 number:");
         String userIdentification = userInput.nextLine();

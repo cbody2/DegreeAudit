@@ -32,6 +32,8 @@ public class Main {
                 System.out.println("Please upload updated transcript");
         }
 
+//        catalogYear();
+
     }
 
     public static boolean transcriptNeedsUpdate(String current, String transcript) {

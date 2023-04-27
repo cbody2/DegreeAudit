@@ -1,2 +1,4 @@
 rootProject.name = 'DegreeAudit'
+include 'src:main:Tests'
+findProject(':src:main:Tests')?.name = 'Tests'
 

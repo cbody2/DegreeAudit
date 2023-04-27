@@ -15,9 +15,9 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
         System.out.println("Welcome to..");
-        StartScreen();
+        startScreen();
 
-        User inputUser = UserInput();
+        User inputUser = userInput();
 
         List<String> transcripts = getTranscriptFilenames();
         if(!hasTranscript(transcripts, inputUser.getUserIdentification())) {
@@ -38,8 +38,24 @@ public class Main {
 
     public static int catalogYear(){
         Scanner inputYear = new Scanner(System.in);
-        int currentYear = 2023;
-        return currentYear;
+
+        System.out.println("What year would you like to view the curriculum for? ");
+        String userYear = inputYear.nextLine();
+
+        if (userYear.length() != 4){
+            System.out.println("Invalid year. Defaulting to current year: " + LocalDate.now().getYear());
+            return LocalDate.now().getYear();
+        }
+
+
+        try {
+            Integer.parseInt(userYear);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid year. Defaulting to current year: " + LocalDate.now().getYear());
+            return LocalDate.now().getYear();
+        }
+
+        return Integer.parseInt(userYear);
     }
 
     public static boolean transcriptNeedsUpdate(String current, String transcript) {
@@ -118,7 +134,7 @@ public class Main {
         return false;
     }
 
-    public static void StartScreen(){
+    public static void startScreen(){
         /**Prints out an interesting start-up screen to the console. */
 
         int width = 200;
@@ -144,7 +160,7 @@ public class Main {
         }
     }
 
-    public static User UserInput(){
+    public static User userInput(){
         /**Returns/Checks a students 900 number for identification.*/
         Scanner userInput = new Scanner(System.in);
         System.out.println("Please input your XULA 900 number:");
@@ -152,14 +168,14 @@ public class Main {
 
         if (userIdentification.length() != 9){
             System.out.println("Invalid 900 number length. Please try again.\n");
-            return UserInput();
+            return userInput();
         }
 
         try {
             Integer.parseInt(userIdentification);
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid 900 number. Please try again.\n");
-            return UserInput();
+            return userInput();
         }
 
         return new User(Integer.parseInt(userIdentification));

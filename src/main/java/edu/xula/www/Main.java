@@ -32,8 +32,13 @@ public class Main {
                 System.out.println("Please upload updated transcript");
         }
 
-//        catalogYear();
+        catalogYear();
 
+    }
+
+    public static int catalogYear(){
+        Scanner inputYear = new Scanner(System.in);
+        int currentYear = 2023;
     }
 
     public static boolean transcriptNeedsUpdate(String current, String transcript) {

@@ -27,9 +27,12 @@ public class Main {
                     getSemester(LocalDate.now().getMonthValue(), LocalDate.now().getYear());
             String latestTranscriptSemester =
                     getLatestTranscriptSemester(transcripts,inputUser.getUserIdentification());
+            System.out.println("Latest Transcript: " + latestTranscriptSemester);
             if (transcriptNeedsUpdate(currentSemester, latestTranscriptSemester))
                 System.out.println("Please upload updated transcript");
         }
+
+//        catalogYear();
 
     }
 
@@ -110,6 +113,7 @@ public class Main {
     }
 
     public static void StartScreen(){
+        /**Prints out an interesting start-up screen to the console. */
 
         int width = 200;
         int height = 30;
@@ -119,7 +123,7 @@ public class Main {
 
         Graphics2D graphics2D = (Graphics2D) graphics;
         graphics2D.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        graphics2D.drawString("DEGREE AUDIT", 15, 24);
+        graphics2D.drawString("D E G R E E  A U D I T", 15, 24);
 
         for (int y = 0; y < height; y++) {
             StringBuilder stringBuilder = new StringBuilder();
@@ -135,6 +139,7 @@ public class Main {
     }
 
     public static User UserInput(){
+        /**Returns/Checks a students 900 number for identification.*/
         Scanner userInput = new Scanner(System.in);
         System.out.println("Please input your XULA 900 number:");
         String userIdentification = userInput.nextLine();

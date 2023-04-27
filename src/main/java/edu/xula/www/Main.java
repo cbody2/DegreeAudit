@@ -39,6 +39,7 @@ public class Main {
     public static int catalogYear(){
         Scanner inputYear = new Scanner(System.in);
         int currentYear = 2023;
+        return currentYear;
     }
 
     public static boolean transcriptNeedsUpdate(String current, String transcript) {

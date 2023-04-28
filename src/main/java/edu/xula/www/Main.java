@@ -39,13 +39,15 @@ public class Main {
     public static boolean transcriptNeedsUpdate(String current, String transcript) {
         String[] currentParts = current.split(" ");
         String[] transcriptParts = transcript.split(" ");
+        if (transcriptParts.length != 2 || current == null || transcript == null)
+            return false;
         if (Integer.parseInt(currentParts[1]) > Integer.parseInt(transcriptParts[1]))
             return true;
         else {
             String currentSemester = currentParts[0];
             String transcriptSemester = transcriptParts[0];
             if (currentSemester.equalsIgnoreCase("Spring"))
-                return true;
+                return false;
             else if (currentSemester.equalsIgnoreCase("Summer"))
                 return transcriptSemester.equalsIgnoreCase("Spring");
             else
@@ -55,6 +57,8 @@ public class Main {
 
     public static String getSemesterFromFilename(String filename) {
         String[] parts = filename.split("_");
+        if (parts.length != 3 || filename == null)
+            return null;
         char[] dateCharacters = parts[2].toCharArray();
         String year = new StringBuilder().append(dateCharacters[0]).append(dateCharacters[1])
                 .append(dateCharacters[2]).append(dateCharacters[3]).toString();

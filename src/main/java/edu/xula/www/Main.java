@@ -32,11 +32,15 @@ public class Main {
                 System.out.println("Please upload updated transcript");
         }
 
+        majorSelect(inputUser);
+
+        System.out.println(inputUser.getMajor());
+
         catalogYear();
 
     }
 
-    public static int catalogYear(){
+    public static int catalogYear(){ //TODO - Couple w/ Evan's curriculum files.
         Scanner inputYear = new Scanner(System.in);
 
         System.out.println("What year would you like to view the curriculum for? ");
@@ -56,6 +60,26 @@ public class Main {
         }
 
         return Integer.parseInt(userYear);
+    }
+
+    public static void majorSelect(User inputUser){
+        /**Set the user's major from a list of majors.*/
+        Scanner userInput = new Scanner(System.in);
+        System.out.println("Please select a major from the following list:");
+        System.out.println("Computer Science\nData Science\nBioinformatics\nYour Selection: ");
+        String userMajor = userInput.nextLine();
+
+        if (userMajor.strip().equalsIgnoreCase("computer science")) {
+            inputUser.setMajor("Computer Science");
+        } else if (userMajor.strip().equalsIgnoreCase("data science")){
+            inputUser.setMajor("Data Science");
+        } else if (userMajor.strip().equalsIgnoreCase("bioinformatics")) {
+            inputUser.setMajor("Bioinformatics");
+        } else{
+            System.out.println("Incorrect major input.");
+            majorSelect(inputUser);
+        }
+
     }
 
     public static boolean transcriptNeedsUpdate(String current, String transcript) {

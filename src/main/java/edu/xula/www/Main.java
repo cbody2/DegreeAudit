@@ -33,6 +33,7 @@ public class Main {
 
     }
 
+
     public static boolean transcriptNeedsUpdate(String current, String transcript) {
         String[] currentParts = current.split(" ");
         String[] transcriptParts = transcript.split(" ");

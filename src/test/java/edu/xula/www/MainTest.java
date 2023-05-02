@@ -13,10 +13,12 @@ class MainTest {
     @BeforeEach
     void setUp() {
         testUser = new User(900287697);
+        testUser.setMajor("Data Science");
     }
 
     @AfterEach
     void tearDown() {
+        testUser = null;
     }
 
     @Test
@@ -45,6 +47,16 @@ class MainTest {
 
     @Test
     void hasTranscript() {
+    }
+
+    @Test
+    void catalogYear(){
+
+    }
+
+    @Test
+    void majorSelect(){
+        assertEquals("Data Science", testUser.getMajor());
     }
 
     @Test

@@ -16,6 +16,7 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
+        System.out.println(LocalDate.now().getMonthValue());
         System.out.println("Welcome to..");
         startScreen();
 
@@ -63,7 +64,9 @@ public class Main {
         }
 
         try {
-            File myFile = new File("src/main/Curriculums/" + inputUser.getMajor().replace(" ", "_") + ".txt");
+            File myFile = new File("src/main/Curriculums/"
+                    + inputUser.getMajor().replace(" ", "_")
+                    + "_" + String.valueOf(LocalDate.now().getYear()) +".txt");
             Scanner myReader = new Scanner(myFile);
             myReader.nextLine();
             myReader.nextLine();

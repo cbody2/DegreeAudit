@@ -3,8 +3,6 @@ package edu.xula.www;
 public class User {
 
     private transient int userIdentification;
-
-
     private String major;
 
     public User(int userIdentification){

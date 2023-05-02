@@ -2,6 +2,8 @@ package edu.xula.www;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -36,13 +38,14 @@ public class Main {
 
         System.out.println(inputUser.getMajor());
 
-        catalogYear();
+        catalogYear(inputUser);
 
     }
 
-    public static int catalogYear(){ //TODO - Couple w/ Evan's curriculum files.
+    public static int catalogYear(User inputUser){
+        /**Output curriculum requirements based on user's selected major.*/
         Scanner inputYear = new Scanner(System.in);
-
+        System.out.println("Latest curriculum date based on " + inputUser.getMajor() + " major.\n");
         System.out.println("What year would you like to view the curriculum for? ");
         String userYear = inputYear.nextLine();
 
@@ -59,6 +62,21 @@ public class Main {
             return LocalDate.now().getYear();
         }
 
+        try {
+            File myFile = new File("src/main/Curriculums/" + inputUser.getMajor().replace(" ", "_") + ".txt");
+            Scanner myReader = new Scanner(myFile);
+            myReader.nextLine();
+            myReader.nextLine();
+            System.out.println(myReader.nextLine() + " Requirements:");
+
+            while (myReader.hasNextLine()) {
+                String[] curriculum = myReader.nextLine().split(" ");
+                System.out.println(curriculum[0] + " " + curriculum[1]);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Error - Curriculum file not found.");
+        }
+
         return Integer.parseInt(userYear);
     }
 
@@ -66,7 +84,7 @@ public class Main {
         /**Set the user's major from a list of majors.*/
         Scanner userInput = new Scanner(System.in);
         System.out.println("Please select a major from the following list:");
-        System.out.println("Computer Science\nData Science\nBioinformatics\nYour Selection: ");
+        System.out.println("Computer Science\nComputer Information Systems\nData Science\nBioinformatics\nYour Selection: ");
         String userMajor = userInput.nextLine();
 
         if (userMajor.strip().equalsIgnoreCase("computer science")) {
@@ -75,8 +93,10 @@ public class Main {
             inputUser.setMajor("Data Science");
         } else if (userMajor.strip().equalsIgnoreCase("bioinformatics")) {
             inputUser.setMajor("Bioinformatics");
+        } else if (userMajor.strip().equalsIgnoreCase("computer information systems")){
+            inputUser.setMajor("Computer Information Systems");
         } else{
-            System.out.println("Incorrect major input.");
+            System.out.println("Incorrect major input.\n");
             majorSelect(inputUser);
         }
 

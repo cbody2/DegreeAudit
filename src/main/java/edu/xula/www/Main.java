@@ -2,14 +2,15 @@ package edu.xula.www;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.Console;
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
+import java.util.Stack;
 
 
 public class Main {
@@ -31,9 +32,6 @@ public class Main {
             if (transcriptNeedsUpdate(currentSemester, latestTranscriptSemester))
                 System.out.println("Please upload updated transcript");
         }
-
-//        catalogYear();
-
     }
 
 
@@ -164,4 +162,12 @@ public class Main {
         return new User(Integer.parseInt(userIdentification));
 
     }
+
+    public static File uploadFile(File sourceFile, String directory) throws IOException {
+        String fileName = sourceFile.getName();
+        Path targetPath = Path.of(directory, fileName);
+        Files.copy(sourceFile.toPath(), targetPath, StandardCopyOption.REPLACE_EXISTING);
+        return targetPath.toFile();
+    }
+
 }

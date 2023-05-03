@@ -28,33 +28,25 @@ public class Main {
                     getSemester(LocalDate.now().getMonthValue(), LocalDate.now().getYear());
             String latestTranscriptSemester =
                     getLatestTranscriptSemester(transcripts,inputUser.getUserIdentification());
+            System.out.println("Latest Transcript: " + latestTranscriptSemester);
             if (transcriptNeedsUpdate(currentSemester, latestTranscriptSemester))
                 System.out.println("Please upload updated transcript");
         }
-
-        Console console = System.console();
-        String fileContents = console.readLine("Enter file contents: ");
-        String directory = "/path/to/your/directory";
-        try {
-            File uploadedFile = uploadFile(fileContents, directory);
-            System.out.println("File uploaded successfully: " + uploadedFile.getAbsolutePath());
-        } catch (IOException e) {
-            System.err.println("Error uploading file: " + e.getMessage());
-        }
-
     }
 
 
     public static boolean transcriptNeedsUpdate(String current, String transcript) {
         String[] currentParts = current.split(" ");
         String[] transcriptParts = transcript.split(" ");
+        if (transcriptParts.length != 2 || current == null || transcript == null)
+            return false;
         if (Integer.parseInt(currentParts[1]) > Integer.parseInt(transcriptParts[1]))
             return true;
         else {
             String currentSemester = currentParts[0];
             String transcriptSemester = transcriptParts[0];
             if (currentSemester.equalsIgnoreCase("Spring"))
-                return true;
+                return false;
             else if (currentSemester.equalsIgnoreCase("Summer"))
                 return transcriptSemester.equalsIgnoreCase("Spring");
             else
@@ -64,6 +56,8 @@ public class Main {
 
     public static String getSemesterFromFilename(String filename) {
         String[] parts = filename.split("_");
+        if (parts.length != 3 || filename == null)
+            return null;
         char[] dateCharacters = parts[2].toCharArray();
         String year = new StringBuilder().append(dateCharacters[0]).append(dateCharacters[1])
                 .append(dateCharacters[2]).append(dateCharacters[3]).toString();
@@ -122,6 +116,7 @@ public class Main {
     }
 
     public static void StartScreen(){
+        /**Prints out an interesting start-up screen to the console. */
 
         int width = 200;
         int height = 30;
@@ -131,7 +126,7 @@ public class Main {
 
         Graphics2D graphics2D = (Graphics2D) graphics;
         graphics2D.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        graphics2D.drawString("DEGREE AUDIT", 15, 24);
+        graphics2D.drawString("D E G R E E  A U D I T", 15, 24);
 
         for (int y = 0; y < height; y++) {
             StringBuilder stringBuilder = new StringBuilder();
@@ -147,6 +142,7 @@ public class Main {
     }
 
     public static User UserInput(){
+        /**Returns/Checks a students 900 number for identification.*/
         Scanner userInput = new Scanner(System.in);
         System.out.println("Please input your XULA 900 number:");
         String userIdentification = userInput.nextLine();

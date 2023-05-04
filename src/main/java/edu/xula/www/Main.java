@@ -37,8 +37,6 @@ public class Main {
 
         majorSelect(inputUser);
 
-        System.out.println(inputUser.getMajor());
-
         catalogYear(inputUser);
 
     }

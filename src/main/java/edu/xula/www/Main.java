@@ -2,6 +2,8 @@ package edu.xula.www;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.Console;
 import java.io.File;
 import java.io.IOException;
@@ -15,10 +17,11 @@ import java.util.Stack;
 
 public class Main {
     public static void main(String[] args) {
+        System.out.println(LocalDate.now().getMonthValue());
         System.out.println("Welcome to..");
-        StartScreen();
+        startScreen();
 
-        User inputUser = UserInput();
+        User inputUser = userInput();
 
         List<String> transcripts = getTranscriptFilenames();
         if(!hasTranscript(transcripts, inputUser.getUserIdentification())) {
@@ -31,6 +34,74 @@ public class Main {
             System.out.println("Latest Transcript: " + latestTranscriptSemester);
             if (transcriptNeedsUpdate(currentSemester, latestTranscriptSemester))
                 System.out.println("Please upload updated transcript");
+        }
+
+        majorSelect(inputUser);
+
+        System.out.println(inputUser.getMajor());
+
+        catalogYear(inputUser);
+
+    }
+
+    public static int catalogYear(User inputUser){
+        /**Output curriculum requirements based on user's selected major.*/
+        Scanner inputYear = new Scanner(System.in);
+        System.out.println("Latest curriculum date based on " + inputUser.getMajor() + " major.\n");
+        System.out.println("What year would you like to view the curriculum for? ");
+        String userYear = inputYear.nextLine();
+
+        if (userYear.length() != 4){
+            System.out.println("Invalid year. Defaulting to current year: " + LocalDate.now().getYear());
+            return LocalDate.now().getYear();
+        }
+
+
+        try {
+            Integer.parseInt(userYear);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid year. Defaulting to current year: " + LocalDate.now().getYear());
+            return LocalDate.now().getYear();
+        }
+
+        try {
+            File myFile = new File("src/main/Curriculums/"
+                    + inputUser.getMajor().replace(" ", "_")
+                    + "_" + String.valueOf(LocalDate.now().getYear()) +".txt");
+            Scanner myReader = new Scanner(myFile);
+            myReader.nextLine();
+            myReader.nextLine();
+            System.out.println(myReader.nextLine() + " Requirements:");
+
+            while (myReader.hasNextLine()) {
+                String[] curriculum = myReader.nextLine().split(" ");
+                System.out.println(curriculum[0] + " " + curriculum[1]);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Error - Curriculum file not found.");
+        }
+
+        return Integer.parseInt(userYear);
+    }
+
+    public static void majorSelect(User inputUser){
+        /**Set the user's major from a list of majors.*/
+        Scanner userInput = new Scanner(System.in);
+        System.out.println("Please select a major from the following list:");
+        System.out.println("Computer Science\nComputer Information Systems\nData Science\nBioinformatics\nYour Selection: ");
+        String userMajor = userInput.nextLine();
+
+        if (userMajor.strip().equalsIgnoreCase("computer science")) {
+            inputUser.setMajor("Computer Science");
+        } else if (userMajor.strip().equalsIgnoreCase("data science")){
+            inputUser.setMajor("Data Science");
+        } else if (userMajor.strip().equalsIgnoreCase("bioinformatics")) {
+            inputUser.setMajor("Bioinformatics");
+        } else if (userMajor.strip().equalsIgnoreCase("computer information systems")){
+            inputUser.setMajor("Computer Information Systems");
+        } else{
+            System.out.println("Incorrect major input.\n");
+            majorSelect(inputUser);
         }
     }
 
@@ -115,7 +186,7 @@ public class Main {
         return false;
     }
 
-    public static void StartScreen(){
+    public static void startScreen(){
         /**Prints out an interesting start-up screen to the console. */
 
         int width = 200;
@@ -141,7 +212,7 @@ public class Main {
         }
     }
 
-    public static User UserInput(){
+    public static User userInput(){
         /**Returns/Checks a students 900 number for identification.*/
         Scanner userInput = new Scanner(System.in);
         System.out.println("Please input your XULA 900 number:");
@@ -149,14 +220,14 @@ public class Main {
 
         if (userIdentification.length() != 9){
             System.out.println("Invalid 900 number length. Please try again.\n");
-            return UserInput();
+            return userInput();
         }
 
         try {
             Integer.parseInt(userIdentification);
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid 900 number. Please try again.\n");
-            return UserInput();
+            return userInput();
         }
 
         return new User(Integer.parseInt(userIdentification));

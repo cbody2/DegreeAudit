@@ -17,6 +17,7 @@ class MainTest {
     @BeforeEach
     void setUp() {
         testUser = new User(900287697);
+        testUser.setMajor("Data Science");
     }
 
     @AfterEach
@@ -107,6 +108,16 @@ class MainTest {
     void hasTranscriptTest() {
         List<String> transcripts = new ArrayList<>(Arrays.asList("900212345_transcript_20211001.txt","900212345_transcript_20221001.txt"));
         assertTrue(Main.hasTranscript(transcripts, 900212345));
+    }
+
+    @Test
+    void catalogYear(){
+
+    }
+
+    @Test
+    void majorSelect(){
+        assertEquals("Data Science", testUser.getMajor());
     }
 
     @Test

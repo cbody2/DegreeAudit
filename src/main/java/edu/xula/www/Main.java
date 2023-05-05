@@ -71,8 +71,11 @@ public class Main {
             System.out.println(myReader.nextLine() + " Requirements:");
 
             while (myReader.hasNextLine()) {
-                String[] curriculum = myReader.nextLine().split(" ");
-                System.out.println(curriculum[0] + " " + curriculum[1]);
+                String line = myReader.nextLine();
+                if (line.isEmpty())
+                    break;
+                String[] curriculum = line.split(" ");
+                System.out.println(curriculum[0] + " " + curriculum[1] + " - Passing Grade: " + curriculum[3]);
             }
         } catch (FileNotFoundException e) {
             System.out.println("Error - Curriculum file not found.");

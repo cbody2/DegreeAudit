@@ -39,18 +39,32 @@ public class Main {
 
         catalogYear(inputUser);
 
+        degreeAudit();
+
     }
 
-    public static int catalogYear(User inputUser){
+    public static void degreeAudit() { //TODO - finalize the degree audit to show difference in classes and 'gutter' electives.
+        System.out.println("\nWould you like to view your Degree Audit thus far?\nY/n?");
+        Scanner inputAnswer = new Scanner(System.in);
+        String userAnswer = inputAnswer.nextLine();
+
+        if (userAnswer.equalsIgnoreCase("n")) {
+            System.out.println("Thank you for using our Degree Audit system. Have a great day!");
+            System.exit(0);
+        }
+    }
+
+    public static void catalogYear(User inputUser){ //TODO - output core requirements as well
         /**Output curriculum requirements based on user's selected major.*/
         Scanner inputYear = new Scanner(System.in);
         System.out.println("Latest curriculum date based on " + inputUser.getMajor() + " major.\n");
+
         System.out.println("What year would you like to view the curriculum for? ");
         String userYear = inputYear.nextLine();
 
         if (userYear.length() != 4){
             System.out.println("Invalid year. Defaulting to current year: " + LocalDate.now().getYear());
-            return LocalDate.now().getYear();
+            userYear = String.valueOf(LocalDate.now().getYear());
         }
 
 
@@ -58,14 +72,14 @@ public class Main {
             Integer.parseInt(userYear);
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid year. Defaulting to current year: " + LocalDate.now().getYear());
-            return LocalDate.now().getYear();
+            userYear = String.valueOf(LocalDate.now().getYear());
         }
 
         try {
-            File myFile = new File("src/main/Curriculums/"
+            File curriculumFile = new File("src/main/Curriculums/"
                     + inputUser.getMajor().replace(" ", "_")
-                    + "_" + String.valueOf(LocalDate.now().getYear()) +".txt");
-            Scanner myReader = new Scanner(myFile);
+                    + "_" + String.valueOf(userYear) +".txt");
+            Scanner myReader = new Scanner(curriculumFile);
             myReader.nextLine();
             myReader.nextLine();
             System.out.println(myReader.nextLine() + " Requirements:");
@@ -80,8 +94,6 @@ public class Main {
         } catch (FileNotFoundException e) {
             System.out.println("Error - Curriculum file not found.");
         }
-
-        return Integer.parseInt(userYear);
     }
 
     public static void majorSelect(User inputUser){

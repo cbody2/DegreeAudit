@@ -9,10 +9,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Scanner;
-import java.util.Stack;
 
 
 public class Main {
@@ -37,13 +35,19 @@ public class Main {
 
         majorSelect(inputUser);
 
-        catalogYear(inputUser);
+        ClassRequirements curriculum = catalogYear(inputUser);
 
-        degreeAudit();
+        degreeAuditPrompt(curriculum);
 
     }
 
-    public static void degreeAudit() { //TODO - finalize the degree audit to show difference in classes and 'gutter' electives.
+    private static void degreeAudit(){ //TODO - finalize the degree audit to show difference in classes and 'gutter' electives.
+        /**Output a user's degree audit based on completed classes on transcript.*/
+
+    }
+
+    public static void degreeAuditPrompt(ClassRequirements curriculum) {
+        /**Prompt a user to view their degree audit.*/
         System.out.println("\nWould you like to view your Degree Audit thus far?\nY/n?");
         Scanner inputAnswer = new Scanner(System.in);
         String userAnswer = inputAnswer.nextLine();
@@ -51,10 +55,15 @@ public class Main {
         if (userAnswer.equalsIgnoreCase("n")) {
             System.out.println("Thank you for using our Degree Audit system. Have a great day!");
             System.exit(0);
+        } else if (userAnswer.equalsIgnoreCase("y")){
+            degreeAudit();
+        } else {
+            System.out.println("Invalid input. Please either type Y/n.");
+            degreeAuditPrompt(curriculum);
         }
     }
 
-    public static void catalogYear(User inputUser){ //TODO - output core requirements as well
+    public static ClassRequirements catalogYear(User inputUser){ //TODO - output core requirements as well
         /**Output curriculum requirements based on user's selected major.*/
         Scanner inputYear = new Scanner(System.in);
         System.out.println("Latest curriculum date based on " + inputUser.getMajor() + " major.\n");
@@ -80,6 +89,8 @@ public class Main {
                     + inputUser.getMajor().replace(" ", "_")
                     + "_" + String.valueOf(userYear) +".txt");
             Scanner myReader = new Scanner(curriculumFile);
+            Set<String> majorRequirements = new HashSet<>();
+            Set<String[]> coreRequirements = new HashSet<>();
             myReader.nextLine();
             myReader.nextLine();
             System.out.println(myReader.nextLine() + " Requirements:");
@@ -89,11 +100,28 @@ public class Main {
                 if (line.isEmpty())
                     break;
                 String[] curriculum = line.split(" ");
+                String requirement = curriculum[0] + " " + curriculum[1] + " " + curriculum[3];
+                majorRequirements.add(requirement);
                 System.out.println(curriculum[0] + " " + curriculum[1] + " - Passing Grade: " + curriculum[3]);
             }
+
+            curriculumFile = new File("src/main/Curriculums/Core_" + String.valueOf(userYear) + ".txt");
+            myReader = new Scanner(curriculumFile);
+            while (myReader.hasNextLine()){
+                String line = myReader.nextLine();
+                if (line.isEmpty())
+                    break;
+                String[] curriculum = line.strip().split(",");
+                coreRequirements.add(curriculum);
+
+            }
+
+            return new ClassRequirements(majorRequirements, coreRequirements);
         } catch (FileNotFoundException e) {
             System.out.println("Error - Curriculum file not found.");
         }
+
+        return new ClassRequirements();
     }
 
     public static void majorSelect(User inputUser){

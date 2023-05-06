@@ -41,7 +41,7 @@ public class Main {
 
     }
 
-    private static void degreeAudit(){ //TODO - finalize the degree audit to show difference in classes and 'gutter' electives.
+    private static void degreeAudit(ClassRequirements curriculum){ //TODO - finalize the degree audit to show difference in classes and 'gutter' electives.
         /**Output a user's degree audit based on completed classes on transcript.*/
 
     }
@@ -56,7 +56,7 @@ public class Main {
             System.out.println("Thank you for using our Degree Audit system. Have a great day!");
             System.exit(0);
         } else if (userAnswer.equalsIgnoreCase("y")){
-            degreeAudit();
+            degreeAudit(curriculum);
         } else {
             System.out.println("Invalid input. Please either type Y/n.");
             degreeAuditPrompt(curriculum);
@@ -114,6 +114,12 @@ public class Main {
                 String[] curriculum = line.strip().split(",");
                 coreRequirements.add(curriculum);
 
+            }
+
+
+            System.out.println("\nCore Requirements (take one from each section):");
+            for (String[] requirement : coreRequirements) {
+                System.out.println(Arrays.toString(requirement));
             }
 
             return new ClassRequirements(majorRequirements, coreRequirements);

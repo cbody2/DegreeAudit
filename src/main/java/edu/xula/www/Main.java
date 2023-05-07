@@ -33,20 +33,54 @@ public class Main {
                 System.out.println("Please upload updated transcript");
         }
 
+        inputUser.setTranscript(createUserTranscript(transcripts, inputUser));
+
         majorSelect(inputUser);
 
         ClassRequirements curriculum = catalogYear(inputUser);
 
-        degreeAuditPrompt(curriculum);
+        degreeAuditPrompt(curriculum, inputUser);
 
     }
 
-    private static void degreeAudit(ClassRequirements curriculum){ //TODO - finalize the degree audit to show difference in classes and 'gutter' electives.
+    private static ArrayList<String> createUserTranscript(List<String> transcripts, User user) {
+        /**Create a list of user taken classes.*/
+        ArrayList<String> userClasses = new ArrayList<String>();
+        try {
+            File transcript = new File("src/main/Transcripts/"
+                    + getLatestTranscript(transcripts, user.getUserIdentification()));
+            Scanner transcriptReader = new Scanner(transcript);
+            transcriptReader.nextLine();
+            transcriptReader.nextLine();
+            transcriptReader.nextLine();
+
+            while (transcriptReader.hasNextLine()){
+                String line = transcriptReader.nextLine();
+                if (line.isEmpty())
+                    break;
+                String[] classes = line.split(" ");
+                String takenClasses = classes[0] + " " + classes[1] + " " + classes[3];
+                userClasses.add(takenClasses);
+
+            }
+
+            return userClasses;
+
+        } catch (FileNotFoundException e) {
+            System.out.println("Please upload a transcript to view your degree audit.");
+            System.exit(0);
+        }
+
+        return new ArrayList<>();
+    }
+
+    private static void degreeAudit(ClassRequirements curriculum, User user){ //TODO - finalize the degree audit to show difference in classes and 'gutter' electives.
         /**Output a user's degree audit based on completed classes on transcript.*/
 
+
     }
 
-    public static void degreeAuditPrompt(ClassRequirements curriculum) {
+    public static void degreeAuditPrompt(ClassRequirements curriculum, User user) {
         /**Prompt a user to view their degree audit.*/
         System.out.println("\nWould you like to view your Degree Audit thus far?\nY/n?");
         Scanner inputAnswer = new Scanner(System.in);
@@ -56,14 +90,14 @@ public class Main {
             System.out.println("Thank you for using our Degree Audit system. Have a great day!");
             System.exit(0);
         } else if (userAnswer.equalsIgnoreCase("y")){
-            degreeAudit(curriculum);
+            degreeAudit(curriculum, user);
         } else {
             System.out.println("Invalid input. Please either type Y/n.");
-            degreeAuditPrompt(curriculum);
+            degreeAuditPrompt(curriculum, user);
         }
     }
 
-    public static ClassRequirements catalogYear(User inputUser){ //TODO - output core requirements as well
+    public static ClassRequirements catalogYear(User inputUser){
         /**Output curriculum requirements based on user's selected major.*/
         Scanner inputYear = new Scanner(System.in);
         System.out.println("Latest curriculum date based on " + inputUser.getMajor() + " major.\n");

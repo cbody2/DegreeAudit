@@ -25,4 +25,9 @@ public class ClassRequirements {
     public Set<String[]> getCore() {
         return core;
     }
+
+    @Override
+    public String toString(){
+        return this.major + " " + this.core;
+    }
 }

@@ -59,7 +59,11 @@ public class Main {
                 if (line.isEmpty())
                     break;
                 String[] classes = line.split(" ");
-                String takenClasses = classes[0] + " " + classes[1] + " " + classes[3];
+                if (classes[3].equalsIgnoreCase("a")
+                        || classes[3].equalsIgnoreCase("b")
+                        || classes[3].equalsIgnoreCase("c"))
+                    classes[3] = "C";
+                String takenClasses = classes[0] + " " + classes[1] + " " + classes[2] + " " + classes[3];
                 userClasses.add(takenClasses);
 
             }
@@ -76,7 +80,38 @@ public class Main {
 
     private static void degreeAudit(ClassRequirements curriculum, User user){ //TODO - finalize the degree audit to show difference in classes and 'gutter' electives.
         /**Output a user's degree audit based on completed classes on transcript.*/
+        List<String> completedClasses = new ArrayList<>();
+        Set<String[]> coreClasses = curriculum.getCore();
+        Set<String> majorClasses = curriculum.getMajor();
+        List<String> gutterClasses = new ArrayList<>();
 
+        if(user.getTranscript().isEmpty())
+            System.exit(0);
+
+        for (String userClass : user.getTranscript()){
+            if (majorClasses.contains(userClass)) {
+                completedClasses.add(userClass);
+                majorClasses.remove(userClass);
+            } else if (coreClasses.contains(userClass)) { //TODO fix output for core classes that have been completed.
+                for (String[] classSet : coreClasses){
+                    for (String subClass : classSet){
+                        if (userClass.equalsIgnoreCase(subClass)){
+                            completedClasses.add(userClass);
+                            coreClasses.remove(classSet);
+                        }
+                    }
+                }
+            } else {
+                gutterClasses.add(userClass);
+            }
+        }
+        System.out.println("Here are your completed Classes:\n" + completedClasses);
+        System.out.println("\nHere are your remaining Major Classes:\n" + majorClasses);
+        System.out.println("\nHere are your Core Classes (Only take one from each list):");
+        for (String[] requirement : coreClasses) {
+            System.out.println(Arrays.toString(requirement));
+        }
+        System.out.println("\nOther Classes:\n" + gutterClasses);
 
     }
 
@@ -134,7 +169,7 @@ public class Main {
                 if (line.isEmpty())
                     break;
                 String[] curriculum = line.split(" ");
-                String requirement = curriculum[0] + " " + curriculum[1] + " " + curriculum[3];
+                String requirement = curriculum[0] + " " + curriculum[1] + " " + curriculum[2] + " " + curriculum[3];
                 majorRequirements.add(requirement);
                 System.out.println(curriculum[0] + " " + curriculum[1] + " - Passing Grade: " + curriculum[3]);
             }

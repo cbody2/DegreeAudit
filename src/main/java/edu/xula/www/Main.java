@@ -117,7 +117,7 @@ public class Main {
         for (String[] requirement : coreClasses) {
             System.out.println(Arrays.toString(requirement));
         }
-        System.out.println("\nOther Classes:\n" + gutterClasses);
+        System.out.println("\nFree Electives:\n" + gutterClasses);
 
     }
 

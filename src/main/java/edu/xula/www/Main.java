@@ -78,12 +78,13 @@ public class Main {
         return new ArrayList<>();
     }
 
-    private static void degreeAudit(ClassRequirements curriculum, User user){ //TODO - finalize the degree audit to show difference in classes and 'gutter' electives.
+    private static void degreeAudit(ClassRequirements curriculum, User user){
         /**Output a user's degree audit based on completed classes on transcript.*/
         List<String> completedClasses = new ArrayList<>();
         Set<String[]> coreClasses = curriculum.getCore();
+        Set<String[]> coreRemoved = new HashSet<>();
         Set<String> majorClasses = curriculum.getMajor();
-        List<String> gutterClasses = new ArrayList<>();
+        Set<String> gutterClasses = new HashSet<>();
 
         if(user.getTranscript().isEmpty())
             System.exit(0);
@@ -92,21 +93,26 @@ public class Main {
             if (majorClasses.contains(userClass)) {
                 completedClasses.add(userClass);
                 majorClasses.remove(userClass);
-            } else if (coreClasses.contains(userClass)) { //TODO fix output for core classes that have been completed.
+            } else if (!coreClasses.isEmpty()) {
                 for (String[] classSet : coreClasses){
                     for (String subClass : classSet){
                         if (userClass.equalsIgnoreCase(subClass)){
                             completedClasses.add(userClass);
-                            coreClasses.remove(classSet);
+                            coreRemoved.add(classSet);
+                        } else {
+                            gutterClasses.add(userClass);
                         }
                     }
                 }
-            } else {
-                gutterClasses.add(userClass);
             }
         }
+
+        coreClasses.removeAll(coreRemoved);
+        completedClasses.forEach(gutterClasses::remove);
         System.out.println("Here are your completed Classes:\n" + completedClasses);
-        System.out.println("\nHere are your remaining Major Classes:\n" + majorClasses);
+        System.out.println("\nHere are your remaining Major Classes:");
+        for (String major : majorClasses)
+            System.out.println(major);
         System.out.println("\nHere are your Core Classes (Only take one from each list):");
         for (String[] requirement : coreClasses) {
             System.out.println(Arrays.toString(requirement));

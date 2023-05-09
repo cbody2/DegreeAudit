@@ -79,7 +79,7 @@ public class Main {
     }
 
     private static void degreeAudit(ClassRequirements curriculum, User user){
-        /**Output a user's degree audit based on completed classes on transcript.*/
+        /**Output a user's degree audit based on completed classes on  their transcript.*/
         List<String> completedClasses = new ArrayList<>();
         Set<String[]> coreClasses = curriculum.getCore();
         Set<String[]> coreRemoved = new HashSet<>();

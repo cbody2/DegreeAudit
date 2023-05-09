@@ -9,10 +9,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Scanner;
-import java.util.Stack;
 
 
 public class Main {
@@ -35,22 +33,123 @@ public class Main {
                 System.out.println("Please upload updated transcript");
         }
 
+        inputUser.setTranscript(createUserTranscript(transcripts, inputUser));
+
         majorSelect(inputUser);
 
-        catalogYear(inputUser);
+        ClassRequirements curriculum = catalogYear(inputUser);
+
+        degreeAuditPrompt(curriculum, inputUser);
 
     }
 
-    public static int catalogYear(User inputUser){
+    public static ArrayList<String> createUserTranscript(List<String> transcripts, User user) {
+        /**Create a list of user taken classes.*/
+        ArrayList<String> userClasses = new ArrayList<>();
+        try {
+            File transcript = new File("src/main/Transcripts/"
+                    + getLatestTranscript(transcripts, user.getUserIdentification()));
+            Scanner transcriptReader = new Scanner(transcript);
+            transcriptReader.nextLine();
+            transcriptReader.nextLine();
+            transcriptReader.nextLine();
+
+            while (transcriptReader.hasNextLine()){
+                String line = transcriptReader.nextLine();
+                if (line.isEmpty())
+                    break;
+                String[] classes = line.split(" ");
+                if (classes[3].equalsIgnoreCase("a")
+                        || classes[3].equalsIgnoreCase("b")
+                        || classes[3].equalsIgnoreCase("c"))
+                    classes[3] = "C";
+                String takenClasses = classes[0] + " " + classes[1] + " " + classes[2] + " " + classes[3];
+                userClasses.add(takenClasses);
+
+            }
+
+            return userClasses;
+
+        } catch (FileNotFoundException e) {
+            System.out.println("Please upload a transcript to view your degree audit.");
+            System.exit(0);
+        }
+
+        return new ArrayList<>();
+    }
+
+    private static void degreeAudit(ClassRequirements curriculum, User user){
+        /**Output a user's degree audit based on completed classes on  their transcript.*/
+        List<String> completedClasses = new ArrayList<>();
+        Set<String[]> coreClasses = curriculum.getCore();
+        Set<String[]> coreRemoved = new HashSet<>();
+        Set<String> majorClasses = curriculum.getMajor();
+        Set<String> gutterClasses = new HashSet<>();
+
+        if(user.getTranscript().isEmpty())
+            System.exit(0);
+
+        for (String userClass : user.getTranscript()){
+            if (majorClasses.contains(userClass)) {
+                completedClasses.add(userClass);
+                majorClasses.remove(userClass);
+            } else if (!coreClasses.isEmpty()) {
+                for (String[] classSet : coreClasses){
+                    for (String subClass : classSet){
+                        if (userClass.equalsIgnoreCase(subClass)){
+                            completedClasses.add(userClass);
+                            coreRemoved.add(classSet);
+                        } else {
+                            gutterClasses.add(userClass);
+                        }
+                    }
+                }
+            }
+        }
+
+        coreClasses.removeAll(coreRemoved);
+        completedClasses.forEach(gutterClasses::remove);
+        System.out.println("Here are your completed Classes:\n" + completedClasses);
+        System.out.println("\nHere are your remaining Major Classes:");
+        for (String major : majorClasses)
+            System.out.println(major);
+        System.out.println("\nHere are your remaining Core Classes (Only take one from each list):");
+        for (String[] requirement : coreClasses) {
+            System.out.println(Arrays.toString(requirement));
+        }
+        System.out.println("\nFree Electives:\n" + gutterClasses);
+
+    }
+
+    public static void degreeAuditPrompt(ClassRequirements curriculum, User user) {
+        /**Prompt a user to view their degree audit.*/
+        System.out.println("\nWould you like to view your Degree Audit thus far?\nY/n?");
+        Scanner inputAnswer = new Scanner(System.in);
+        String userAnswer = inputAnswer.nextLine();
+
+        if (userAnswer.equalsIgnoreCase("n")) {
+            System.out.println("Thank you for using our Degree Audit system. Have a great day!");
+            System.exit(0);
+        } else if (userAnswer.equalsIgnoreCase("y")){
+            degreeAudit(curriculum, user);
+        } else {
+            System.out.println("Invalid input. Please either type Y/n.");
+            degreeAuditPrompt(curriculum, user);
+        }
+    }
+
+    public static ClassRequirements catalogYear(User inputUser){
         /**Output curriculum requirements based on user's selected major.*/
         Scanner inputYear = new Scanner(System.in);
-        System.out.println("Latest curriculum date based on " + inputUser.getMajor() + " major.\n");
+        System.out.println("Latest curriculum date based on " + inputUser.getMajor() + " major.");
+        System.out.print(LocalDate.now().getYear() + "\n\n");
+
         System.out.println("What year would you like to view the curriculum for? ");
         String userYear = inputYear.nextLine();
 
         if (userYear.length() != 4){
             System.out.println("Invalid year. Defaulting to current year: " + LocalDate.now().getYear());
-            return LocalDate.now().getYear();
+            userYear = String.valueOf(LocalDate.now().getYear());
         }
 
 
@@ -58,14 +157,16 @@ public class Main {
             Integer.parseInt(userYear);
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid year. Defaulting to current year: " + LocalDate.now().getYear());
-            return LocalDate.now().getYear();
+            userYear = String.valueOf(LocalDate.now().getYear());
         }
 
         try {
-            File myFile = new File("src/main/Curriculums/"
+            File curriculumFile = new File("src/main/Curriculums/"
                     + inputUser.getMajor().replace(" ", "_")
-                    + "_" + String.valueOf(LocalDate.now().getYear()) +".txt");
-            Scanner myReader = new Scanner(myFile);
+                    + "_" + String.valueOf(userYear) +".txt");
+            Scanner myReader = new Scanner(curriculumFile);
+            Set<String> majorRequirements = new HashSet<>();
+            Set<String[]> coreRequirements = new HashSet<>();
             myReader.nextLine();
             myReader.nextLine();
             System.out.println(myReader.nextLine() + " Requirements:");
@@ -75,13 +176,34 @@ public class Main {
                 if (line.isEmpty())
                     break;
                 String[] curriculum = line.split(" ");
+                String requirement = curriculum[0] + " " + curriculum[1] + " " + curriculum[2] + " " + curriculum[3];
+                majorRequirements.add(requirement);
                 System.out.println(curriculum[0] + " " + curriculum[1] + " - Passing Grade: " + curriculum[3]);
             }
+
+            curriculumFile = new File("src/main/Curriculums/Core_" + String.valueOf(userYear) + ".txt");
+            myReader = new Scanner(curriculumFile);
+            while (myReader.hasNextLine()){
+                String line = myReader.nextLine();
+                if (line.isEmpty())
+                    break;
+                String[] curriculum = line.strip().split(",");
+                coreRequirements.add(curriculum);
+
+            }
+
+
+            System.out.println("\nCore Requirements (take one from each section):");
+            for (String[] requirement : coreRequirements) {
+                System.out.println(Arrays.toString(requirement));
+            }
+
+            return new ClassRequirements(majorRequirements, coreRequirements);
         } catch (FileNotFoundException e) {
             System.out.println("Error - Curriculum file not found.");
         }
 
-        return Integer.parseInt(userYear);
+        return new ClassRequirements();
     }
 
     public static void majorSelect(User inputUser){

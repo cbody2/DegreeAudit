@@ -113,7 +113,7 @@ public class Main {
         System.out.println("\nHere are your remaining Major Classes:");
         for (String major : majorClasses)
             System.out.println(major);
-        System.out.println("\nHere are your Core Classes (Only take one from each list):");
+        System.out.println("\nHere are your remaining Core Classes (Only take one from each list):");
         for (String[] requirement : coreClasses) {
             System.out.println(Arrays.toString(requirement));
         }
@@ -141,7 +141,8 @@ public class Main {
     public static ClassRequirements catalogYear(User inputUser){
         /**Output curriculum requirements based on user's selected major.*/
         Scanner inputYear = new Scanner(System.in);
-        System.out.println("Latest curriculum date based on " + inputUser.getMajor() + " major.\n");
+        System.out.println("Latest curriculum date based on " + inputUser.getMajor() + " major.");
+        System.out.print(LocalDate.now().getYear() + "\n\n");
 
         System.out.println("What year would you like to view the curriculum for? ");
         String userYear = inputYear.nextLine();

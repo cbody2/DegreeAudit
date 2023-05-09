@@ -43,9 +43,9 @@ public class Main {
 
     }
 
-    private static ArrayList<String> createUserTranscript(List<String> transcripts, User user) {
+    public static ArrayList<String> createUserTranscript(List<String> transcripts, User user) {
         /**Create a list of user taken classes.*/
-        ArrayList<String> userClasses = new ArrayList<String>();
+        ArrayList<String> userClasses = new ArrayList<>();
         try {
             File transcript = new File("src/main/Transcripts/"
                     + getLatestTranscript(transcripts, user.getUserIdentification()));

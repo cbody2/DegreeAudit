@@ -4,9 +4,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.io.FileNotFoundException;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,8 +15,9 @@ class MainTest {
 
     @BeforeEach
     void setUp() {
-        testUser = new User(900287697);
+        testUser = new User(900200697);
         testUser.setMajor("Data Science");
+        testUser.setTranscript(new ArrayList<>());
     }
 
     @AfterEach
@@ -111,17 +111,28 @@ class MainTest {
     }
 
     @Test
-    void catalogYear(){
-
+    void catalogYearTest(){
+//        assertInstanceOf(ClassRequirements.class, Main.catalogYear(testUser));
     }
 
     @Test
-    void majorSelect(){
+    void majorSelectTest(){
         assertEquals("Data Science", testUser.getMajor());
     }
 
     @Test
-    void userInput() {
+    void userInputTest() {
         assertEquals(User.class, testUser.getClass());
+    }
+
+    @Test
+    void createUserTranscriptTest(){
+        assertInstanceOf(ArrayList.class, testUser.getTranscript());
+        List<String> transcripts = new ArrayList<>(Arrays.asList("900736152_transcript_20230325","900212345_transcript_20211001.txt","900212345_transcript_20221001.txt"));
+        assertThrows(EmptyStackException.class, () -> Main.createUserTranscript(transcripts, testUser));
+        testUser.setUserIdentification(900212345);
+        assertThrows(FileNotFoundException.class, () -> Main.createUserTranscript(transcripts, testUser));
+        testUser.setUserIdentification(900736152);
+        assertInstanceOf(ArrayList.class, Main.createUserTranscript(transcripts, testUser));
     }
 }

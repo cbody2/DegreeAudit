@@ -50,6 +50,17 @@ public class Main {
             File transcript = new File("src/main/Transcripts/"
                     + getLatestTranscript(transcripts, user.getUserIdentification()));
             Scanner transcriptReader = new Scanner(transcript);
+            Path path = Paths.get("src/main/Transcripts/"
+                    + getLatestTranscript(transcripts, user.getUserIdentification()));
+            try {
+                long bytes = Files.size(path);
+                if (bytes == 0){
+                    System.out.println("Blank file. Please upload a proper transcript.");
+                    System.exit(0);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             transcriptReader.nextLine();
             transcriptReader.nextLine();
             transcriptReader.nextLine();
@@ -86,8 +97,8 @@ public class Main {
         Set<String> majorClasses = curriculum.getMajor();
         Set<String> gutterClasses = new HashSet<>();
 
-        if(user.getTranscript().isEmpty())
-            System.exit(0);
+//        if(user.getTranscript().isEmpty())
+//            System.exit(0);
 
         for (String userClass : user.getTranscript()){
             if (majorClasses.contains(userClass)) {
@@ -96,7 +107,7 @@ public class Main {
             } else if (!coreClasses.isEmpty()) {
                 for (String[] classSet : coreClasses){
                     for (String subClass : classSet){
-                        if (userClass.equalsIgnoreCase(subClass)){
+                        if (userClass.strip().equalsIgnoreCase(subClass.strip())){
                             completedClasses.add(userClass);
                             coreRemoved.add(classSet);
                         } else {
@@ -213,13 +224,24 @@ public class Main {
         System.out.println("Computer Science\nComputer Information Systems\nData Science\nBioinformatics\nYour Selection: ");
         String userMajor = userInput.nextLine();
 
-        if (userMajor.strip().equalsIgnoreCase("computer science")) {
+        if (userMajor
+                .strip()
+                .replaceAll("\\s", "")
+                .equalsIgnoreCase("computerscience")) {
             inputUser.setMajor("Computer Science");
-        } else if (userMajor.strip().equalsIgnoreCase("data science")){
+        } else if (userMajor
+                .strip()
+                .replaceAll("\\s", "")
+                .equalsIgnoreCase("datascience")){
             inputUser.setMajor("Data Science");
-        } else if (userMajor.strip().equalsIgnoreCase("bioinformatics")) {
+        } else if (userMajor
+                .strip()
+                .equalsIgnoreCase("bioinformatics")) {
             inputUser.setMajor("Bioinformatics");
-        } else if (userMajor.strip().equalsIgnoreCase("computer information systems")){
+        } else if (userMajor
+                .strip()
+                .replaceAll("\\s", "")
+                .equalsIgnoreCase("computerinformationsystems")){
             inputUser.setMajor("Computer Information Systems");
         } else{
             System.out.println("Incorrect major input.\n");
@@ -263,14 +285,19 @@ public class Main {
     }
 
     public static String getLatestTranscript(List<String> transcripts, int id) {
-        Stack<String> userTranscripts = new Stack<>();
-        for (int i = 0; i < transcripts.size(); i++) {
-            String current = transcripts.get(i);
-            String[] parts = current.split("_");
-            if (Integer.parseInt(parts[0]) == id)
-                userTranscripts.push(current);
+        try {
+            Stack<String> userTranscripts = new Stack<>();
+            for (int i = 0; i < transcripts.size(); i++) {
+                String current = transcripts.get(i);
+                String[] parts = current.split("_");
+                if (Integer.parseInt(parts[0]) == id)
+                    userTranscripts.push(current);
+            }
+            return userTranscripts.pop();
+        } catch (EmptyStackException e){
+            System.exit(0);
         }
-        return userTranscripts.pop();
+        return "";
     }
 
     public static String getSemester(int month, int year) {

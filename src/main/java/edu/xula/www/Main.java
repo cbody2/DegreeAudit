@@ -86,8 +86,8 @@ public class Main {
         Set<String> majorClasses = curriculum.getMajor();
         Set<String> gutterClasses = new HashSet<>();
 
-        if(user.getTranscript().isEmpty())
-            System.exit(0);
+//        if(user.getTranscript().isEmpty())
+//            System.exit(0);
 
         for (String userClass : user.getTranscript()){
             if (majorClasses.contains(userClass)) {

@@ -50,6 +50,17 @@ public class Main {
             File transcript = new File("src/main/Transcripts/"
                     + getLatestTranscript(transcripts, user.getUserIdentification()));
             Scanner transcriptReader = new Scanner(transcript);
+            Path path = Paths.get("src/main/Transcripts/"
+                    + getLatestTranscript(transcripts, user.getUserIdentification()));
+            try {
+                long bytes = Files.size(path);
+                if (bytes == 0){
+                    System.out.println("Blank file. Please upload a proper transcript.");
+                    System.exit(0);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             transcriptReader.nextLine();
             transcriptReader.nextLine();
             transcriptReader.nextLine();
@@ -96,7 +107,7 @@ public class Main {
             } else if (!coreClasses.isEmpty()) {
                 for (String[] classSet : coreClasses){
                     for (String subClass : classSet){
-                        if (userClass.equalsIgnoreCase(subClass)){
+                        if (userClass.strip().equalsIgnoreCase(subClass.strip())){
                             completedClasses.add(userClass);
                             coreRemoved.add(classSet);
                         } else {
@@ -263,14 +274,19 @@ public class Main {
     }
 
     public static String getLatestTranscript(List<String> transcripts, int id) {
-        Stack<String> userTranscripts = new Stack<>();
-        for (int i = 0; i < transcripts.size(); i++) {
-            String current = transcripts.get(i);
-            String[] parts = current.split("_");
-            if (Integer.parseInt(parts[0]) == id)
-                userTranscripts.push(current);
+        try {
+            Stack<String> userTranscripts = new Stack<>();
+            for (int i = 0; i < transcripts.size(); i++) {
+                String current = transcripts.get(i);
+                String[] parts = current.split("_");
+                if (Integer.parseInt(parts[0]) == id)
+                    userTranscripts.push(current);
+            }
+            return userTranscripts.pop();
+        } catch (EmptyStackException e){
+            System.exit(0);
         }
-        return userTranscripts.pop();
+        return "";
     }
 
     public static String getSemester(int month, int year) {

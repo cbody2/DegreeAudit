@@ -120,7 +120,7 @@ public class Main {
 
         coreClasses.removeAll(coreRemoved);
         completedClasses.forEach(gutterClasses::remove);
-        System.out.println("Here are your completed Classes:\n" + completedClasses);
+        // System.out.println("Here are your completed Classes:\n" + completedClasses);
         System.out.println("\nHere are your remaining Major Classes:");
         for (String major : majorClasses)
             System.out.println(major);
@@ -134,9 +134,9 @@ public class Main {
 
     public static void degreeAuditPrompt(ClassRequirements curriculum, User user) {
         /**Prompt a user to view their degree audit.*/
-        System.out.println("\nWould you like to view your Degree Audit thus far?\nY/n?");
+        System.out.println("\nHere is your 2023 degree audit!\n");
         Scanner inputAnswer = new Scanner(System.in);
-        String userAnswer = inputAnswer.nextLine();
+        String userAnswer = "y";
 
         if (userAnswer.equalsIgnoreCase("n")) {
             System.out.println("Thank you for using our Degree Audit system. Have a great day!");
@@ -155,8 +155,8 @@ public class Main {
         System.out.println("Latest curriculum date based on " + inputUser.getMajor() + " major.");
         System.out.print(LocalDate.now().getYear() + "\n\n");
 
-        System.out.println("What year would you like to view the curriculum for? ");
-        String userYear = inputYear.nextLine();
+        // System.out.println("What year would you like to view the curriculum for? ");
+        String userYear = "2023";
 
         if (userYear.length() != 4){
             System.out.println("Invalid year. Defaulting to current year: " + LocalDate.now().getYear());
@@ -180,7 +180,7 @@ public class Main {
             Set<String[]> coreRequirements = new HashSet<>();
             myReader.nextLine();
             myReader.nextLine();
-            System.out.println(myReader.nextLine() + " Requirements:");
+            myReader.nextLine();
 
             while (myReader.hasNextLine()) {
                 String line = myReader.nextLine();
@@ -189,7 +189,7 @@ public class Main {
                 String[] curriculum = line.split(" ");
                 String requirement = curriculum[0] + " " + curriculum[1] + " " + curriculum[2] + " " + curriculum[3];
                 majorRequirements.add(requirement);
-                System.out.println(curriculum[0] + " " + curriculum[1] + " - Passing Grade: " + curriculum[3]);
+                // System.out.println(curriculum[0] + " " + curriculum[1] + " - Passing Grade: " + curriculum[3]);
             }
 
             curriculumFile = new File("src/main/Curriculums/Core_" + String.valueOf(userYear) + ".txt");
@@ -204,10 +204,10 @@ public class Main {
             }
 
 
-            System.out.println("\nCore Requirements (take one from each section):");
+            /**System.out.println("\nCore Requirements (take one from each section):");
             for (String[] requirement : coreRequirements) {
                 System.out.println(Arrays.toString(requirement));
-            }
+            }*/
 
             return new ClassRequirements(majorRequirements, coreRequirements);
         } catch (FileNotFoundException e) {
@@ -221,7 +221,7 @@ public class Main {
         /**Set the user's major from a list of majors.*/
         Scanner userInput = new Scanner(System.in);
         System.out.println("Please select a major from the following list:");
-        System.out.println("Computer Science\nComputer Information Systems\nData Science\nBioinformatics\nYour Selection: ");
+        System.out.println("Computer Science\nYour Selection: ");
         String userMajor = userInput.nextLine();
 
         if (userMajor

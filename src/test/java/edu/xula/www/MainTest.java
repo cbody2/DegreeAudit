@@ -135,4 +135,5 @@ class MainTest {
         testUser.setUserIdentification(900736152);
         assertInstanceOf(ArrayList.class, Main.createUserTranscript(transcripts, testUser));
     }
+
 }

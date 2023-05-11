@@ -224,13 +224,24 @@ public class Main {
         System.out.println("Computer Science\nComputer Information Systems\nData Science\nBioinformatics\nYour Selection: ");
         String userMajor = userInput.nextLine();
 
-        if (userMajor.strip().equalsIgnoreCase("computer science")) {
+        if (userMajor
+                .strip()
+                .replaceAll("\\s", "")
+                .equalsIgnoreCase("computerscience")) {
             inputUser.setMajor("Computer Science");
-        } else if (userMajor.strip().equalsIgnoreCase("data science")){
+        } else if (userMajor
+                .strip()
+                .replaceAll("\\s", "")
+                .equalsIgnoreCase("datascience")){
             inputUser.setMajor("Data Science");
-        } else if (userMajor.strip().equalsIgnoreCase("bioinformatics")) {
+        } else if (userMajor
+                .strip()
+                .equalsIgnoreCase("bioinformatics")) {
             inputUser.setMajor("Bioinformatics");
-        } else if (userMajor.strip().equalsIgnoreCase("computer information systems")){
+        } else if (userMajor
+                .strip()
+                .replaceAll("\\s", "")
+                .equalsIgnoreCase("computerinformationsystems")){
             inputUser.setMajor("Computer Information Systems");
         } else{
             System.out.println("Incorrect major input.\n");

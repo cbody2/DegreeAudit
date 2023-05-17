@@ -1,3 +1,3 @@
 # DegreeAudit
-
+This is a console-based app that aims to help XULA students view their graduation requirements. Xavier University of Louisiana already had an application in their system that does a similar job, called DegreeWorks. Sometimes, DegreeWorks has trouble separating and identifying certain courses that count towards a particular credit, such as core/major/minor credits, for a student. In turn, a student may have increasingly more trouble with knowing how far they are on track to graduating. This app intends to fix those problems, by correctly separating courses into the selective requirements a student should get credit for if they have a passing grade for that course, thus completing a particular graduation requirement, on their academic transcript.
 ##
